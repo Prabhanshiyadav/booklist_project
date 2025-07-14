@@ -17,6 +17,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'books',
+    'tailwind',
+    #'theme',  # custom theme app (we'll create it)
+    'django_browser_reload',  # optional for live reload
+
 ]
 
 MIDDLEWARE = [
@@ -72,5 +76,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = ['127.0.0.1']
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

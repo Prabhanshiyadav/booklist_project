@@ -1,7 +1,26 @@
-<h1>Book Form</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
-<a href="/">Back</a>
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="max-w-xl mx-auto mt-12 bg-white p-6 rounded shadow">
+        <h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
+
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                Save Book
+            </button>
+        </form>
+
+        <a href="{% url 'book_list' %}" class="text-blue-500 text-sm mt-4 inline-block">← Back to Book List</a>
+    </div>
+
+</body>
+</html>

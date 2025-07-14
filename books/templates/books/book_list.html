@@ -1,11 +1,84 @@
-<h1>Book List</h1>
-<a href="/add/">Add New Book</a>
-<ul>
-  {% for book in books %}
-    <li>
-      <strong>{{ book.title }}</strong> by {{ book.author }}
-      [<a href="/{{ book.id }}/edit/">Edit</a>]
-      [<a href="/{{ book.id }}/delete/">Delete</a>]
-    </li>
-  {% endfor %}
-</ul>
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>📚 Book Dashboard</title>
+  <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-blue-700 text-white px-6 py-4 flex justify-between items-center shadow">
+    <h1 class="text-2xl font-bold">📘 BookList</h1>
+    <a href="{% url 'add_book' %}" class="bg-white text-blue-700 px-4 py-2 rounded shadow hover:bg-gray-100">
+      + Add Book
+    </a>
+  </nav>
+
+  <div class="max-w-6xl mx-auto mt-6 px-4">
+
+    
+    <!-- Search -->
+    <form method="GET" class="mb-6">
+      <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search by title or author"
+             class="w-full p-2 border rounded shadow-sm" />
+    </form>
+
+    <!-- Dashboard Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-semibold text-gray-700">📚 Total Books</h3>
+        <p class="text-2xl font-bold text-blue-700">{{ books.count }}</p>
+      </div>
+      <!-- Add more stats if needed -->
+    </div>
+
+    <!-- Book Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for book in books %}
+        <div class="bg-white rounded-lg p-4 shadow hover:shadow-lg transition">
+          <h2 class="text-xl font-bold text-blue-800">{{ book.title }}</h2>
+          <p class="text-gray-600 mb-1"><strong>Author:</strong> {{ book.author }}</p>
+          <p class="text-gray-500 text-sm mb-2"><strong>Published:</strong> {{ book.published_date }}</p>
+          <p class="text-sm text-gray-700 line-clamp-3">{{ book.description|truncatewords:20 }}</p>
+
+          <div class="mt-4 flex justify-between">
+<div class="flex space-x-4">
+  <a href="{% url 'edit_book' book.pk %}" title="Edit" class="text-blue-600 hover:underline">✏️</a>
+  <a href="{% url 'delete_book' book.pk %}" title="Delete"
+     onclick="return confirm('Are you sure you want to delete this book?')"
+     class="text-red-600 hover:underline">🗑️</a>
+</div>
+
+<div class="flex gap-4 my-4">
+  <a href="{% url 'export_csv' %}" class="bg-green-500 text-white px-3 py-2 rounded shadow hover:bg-green-600">📁 Export CSV</a>
+  <a href="{% url 'export_pdf' %}" class="bg-red-500 text-white px-3 py-2 rounded shadow hover:bg-red-600">📄 Export PDF</a>
+</div>
+
+<div class="mt-6 flex justify-center space-x-2">
+  {% if books.has_previous %}
+    <a href="?page={{ books.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+       class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Prev</a>
+  {% endif %}
+
+  <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ books.number }}</span>
+
+  {% if books.has_next %}
+    <a href="?page={{ books.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+       class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Next</a>
+  {% endif %}
+</div>
+
+            <!-- Add delete button later -->
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-gray-600">No books found.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+
+</body>
+</html>
